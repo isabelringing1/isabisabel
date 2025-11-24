@@ -10,10 +10,17 @@ function App() {
   const BLADES_PER_COLUMN = 40;
 
   function getZIndex(x, y) {
-    var xIndex = (x / window.innerWidth) * BLADES_PER_ROW;
-    var yIndex = (y / window.innerHeight) * BLADES_PER_COLUMN;
+    const xIndex = (x / window.innerWidth) * BLADES_PER_ROW;
+    const yIndex = (y / window.innerHeight) * BLADES_PER_COLUMN;
 
-    var zIndex = yIndex * BLADES_PER_COLUMN + xIndex;
+    const j = Math.floor(xIndex);
+    const i = Math.floor(yIndex);
+
+    console.log(j, i);
+
+    // Use the same indexing logic as when creating
+    const zIndex = i * BLADES_PER_COLUMN + j;
+
     console.log("Z index is " + zIndex);
     return zIndex;
   }

@@ -10,7 +10,7 @@ export default function Field(props) {
   useEffect(() => {
     const PUSH_RADIUS = 100;
 
-    const VARIANCE = 70;
+    const VARIANCE = 60;
 
     const field = fieldRef.current;
     bladesRef.current = [];
@@ -91,7 +91,7 @@ export default function Field(props) {
     function animate(t) {
       const blades = bladesRef.current;
 
-      const numBatches = 19;
+      const numBatches = 500;
 
       for (let i = 0; i < numBatches; i++) {
         for (var j = 0; j < blades.length; j++) {

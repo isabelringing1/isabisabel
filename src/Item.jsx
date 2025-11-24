@@ -4,8 +4,8 @@ import w from "/w.png";
 
 function Item(props) {
   const { getZIndex } = props;
-  const [posTop, setPosTop] = useState(null);
-  const [posLeft, setPosLeft] = useState(0);
+  const [posTop, setPosTop] = useState("500");
+  const [posLeft, setPosLeft] = useState("200");
 
   const dragTop = useRef(null);
   const dragLeft = useState(null);
@@ -36,7 +36,7 @@ function Item(props) {
   var itemStyle = {
     top: posTop + "px",
     left: posLeft + "px",
-    zIndex: getZIndex(posTop, posLeft),
+    zIndex: getZIndex(posLeft, posTop),
   };
 
   return (

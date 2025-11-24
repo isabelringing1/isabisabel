@@ -56,13 +56,17 @@ body {
   cursor: pointer;
 
   position: absolute;
-  filter: drop-shadow(2px 4px 6px rgb(0, 0, 0));
+  filter: drop-shadow(2px 4px 10px rgb(0, 0, 0, 0.3));
   -webkit-user-select: none; /* Safari */
   -moz-user-select: none; /* Firefox */
   -ms-user-select: none; /* IE 10+ */
   user-select: none;
+
+  width: 150px;
+  transform: translate(-50%, -50%);
 }
 
 .item-img {
   pointer-events: none;
+  width: 13vh;
 }
