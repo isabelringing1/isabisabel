@@ -1,14 +1,15 @@
 import { useEffect, useRef } from "react";
 
-export default function Field() {
+export default function Field(props) {
+  const { blades_per_row, blades_per_column } = props;
   const fieldRef = useRef(null);
   const bladesRef = useRef([]);
 
+  const numBetween = (num, lower, higher) => num > lower && num < higher;
+
   useEffect(() => {
     const PUSH_RADIUS = 100;
-    const BATCH_SIZE = 60; // blades updated per frame
-    const BLADES_PER_ROW = 60;
-    const BLADES_PER_COLUMN = 50;
+
     const VARIANCE = 70;
 
     const field = fieldRef.current;
@@ -17,19 +18,31 @@ export default function Field() {
     // Clear
     field.innerHTML = "";
 
-    for (let i = 0; i < BLADES_PER_COLUMN; i++) {
-      for (let j = 0; j < BLADES_PER_ROW; j++) {
+    for (let i = 0; i < blades_per_column; i++) {
+      for (let j = 0; j < blades_per_row; j++) {
         const blade = document.createElement("div");
         blade.className = "blade";
 
-        var x = (j / BLADES_PER_ROW) * window.innerWidth;
-        var y = (i / BLADES_PER_COLUMN) * window.innerHeight;
+        var x = (j / blades_per_row) * window.innerWidth;
+        var y = (i / blades_per_column) * window.innerHeight;
         x += Math.random() * VARIANCE - VARIANCE / 2;
         y += Math.random() * VARIANCE - VARIANCE / 2;
 
         blade.style.left = x + "px";
         blade.style.top = y + "px";
-        blade.style.zIndex = i * BLADES_PER_COLUMN + j;
+        blade.style.zIndex = i * blades_per_column + j;
+
+        if (numBetween(j, 10 - i / 2, 30 - i / 2) && numBetween(i, 0, 50)) {
+          if (Math.random() * 10 < 8) {
+            blade.className += " style-1";
+          }
+        }
+
+        if (numBetween(j, 50 - i / 3, 60) && numBetween(i, 0, 50)) {
+          if (Math.random() * 10 < 9) {
+            blade.className += " style-2";
+          }
+        }
 
         const bladeObj = {
           el: blade,
@@ -78,14 +91,11 @@ export default function Field() {
     function animate(t) {
       const blades = bladesRef.current;
 
-      const start = frame * BATCH_SIZE;
-      const end = start + BATCH_SIZE;
+      const numBatches = 19;
 
-      var index = 0;
-
-      for (let i = 0; i < 3; i++) {
+      for (let i = 0; i < numBatches; i++) {
         for (var j = 0; j < blades.length; j++) {
-          if (j % 3 != i) {
+          if (j % numBatches != i) {
             continue;
           }
           const b = blades[j];
@@ -96,7 +106,7 @@ export default function Field() {
         }
       }
 
-      frame = (frame + 1) % Math.ceil(blades.length / BATCH_SIZE);
+      frame = (frame + 1) % Math.ceil(numBatches);
 
       requestAnimationFrame(animate);
     }

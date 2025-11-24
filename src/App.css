@@ -1,6 +1,12 @@
+@font-face {
+  font-family: readex-pro;
+  src: url("ReadexPro-Regular.ttf");
+}
+
 body {
   margin: 0;
   background: #4caf50;
+  font-family: readex-pro;
 }
 
 .grass-field {
@@ -8,7 +14,6 @@ body {
   width: 100vw;
   height: 100vh;
   overflow: hidden;
-  perspective: 800px;
 }
 
 .blade {
@@ -16,8 +21,48 @@ body {
   width: 0.7vh;
   height: 6vh;
   background: linear-gradient(to bottom, #66dd44, #4caf50);
+  opacity: 0.8;
   border-radius: 1vh;
   transform-origin: bottom center;
   transform: rotate(var(--rot, 0rad));
   transition: transform 0.5s ease-out;
+}
+
+.style-1 {
+  background: linear-gradient(to bottom, #b2eb4a, #4caf50);
+}
+
+.style-2 {
+  background: linear-gradient(to bottom, #4cd77f, #4caf50);
+}
+
+.title-div {
+  position: absolute;
+  font-size: 4vh;
+  width: 100%;
+  display: flex;
+  justify-content: left;
+  padding-top: 3vh;
+  padding-left: 3vh;
+  z-index: 1000;
+}
+
+.title {
+  color: white;
+  filter: drop-shadow(2px 4px 10px rgba(0, 0, 0, 0.532));
+}
+
+.item {
+  cursor: pointer;
+
+  position: absolute;
+  filter: drop-shadow(2px 4px 6px rgb(0, 0, 0));
+  -webkit-user-select: none; /* Safari */
+  -moz-user-select: none; /* Firefox */
+  -ms-user-select: none; /* IE 10+ */
+  user-select: none;
+}
+
+.item-img {
+  pointer-events: none;
 }
