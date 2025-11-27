@@ -1,17 +1,17 @@
 import { useEffect, useRef } from "react";
 
 export default function Field(props) {
-  const { blades_per_row, blades_per_column } = props;
+  const { blades_per_row, blades_per_column, grassMotion } = props;
   const fieldRef = useRef(null);
   const bladesRef = useRef([]);
+  const grassMotionRef = useRef(true);
 
   const numBetween = (num, lower, higher) => num > lower && num < higher;
 
-  useEffect(() => {
-    const PUSH_RADIUS = 100;
+  const PUSH_RADIUS = 150;
+  const VARIANCE = 60;
 
-    const VARIANCE = 60;
-
+  const makeField = () => {
     const field = fieldRef.current;
     bladesRef.current = [];
 
@@ -57,59 +57,69 @@ export default function Field(props) {
         field.appendChild(blade);
       }
     }
+  };
 
-    // Mouse interaction
-    function handleMouseMove(e) {
-      const mx = e.clientX;
-      const my = e.clientY;
-
-      bladesRef.current.forEach((b) => {
-        const dx = mx - b.x;
-        const dy = my - b.y - 45; // bottom of blade
-        const dist = Math.sqrt(dx * dx + dy * dy);
-
-        if (dist < PUSH_RADIUS) {
-          var direction = dx > 0 ? 1 : 0;
-
-          const angle = Math.atan2(dy, dx);
-          const force = (PUSH_RADIUS - dist) / PUSH_RADIUS;
-          const rot = (angle - (direction * Math.PI) / 2) * force * 0.4;
-          b.isPushed = true;
-
-          b.el.style.setProperty("--rot", `${rot}rad`);
-        } else {
-          b.isPushed = false;
-        }
-      });
+  function handleMouseMove(e) {
+    if (!grassMotion) {
+      return;
     }
+    const mx = e.clientX;
+    const my = e.clientY;
+
+    bladesRef.current.forEach((b) => {
+      const dx = mx - b.x;
+      const dy = my - b.y - 45; // bottom of blade
+      const dist = Math.sqrt(dx * dx + dy * dy);
+
+      if (dist < PUSH_RADIUS) {
+        var direction = dx > 0 ? 1 : 0;
+
+        const angle = Math.atan2(dy, dx);
+        const force = (PUSH_RADIUS - dist) / PUSH_RADIUS;
+        const rot = (angle - (direction * Math.PI) / 2) * force * 0.4;
+        b.isPushed = true;
+
+        b.el.style.setProperty("--rot", `${rot}rad`);
+      } else {
+        b.isPushed = false;
+      }
+    });
+  }
+  let frame = 0;
+  function animate(t) {
+    if (!grassMotionRef.current) {
+      return;
+    }
+    const blades = bladesRef.current;
+
+    const numBatches = 500;
+
+    for (let i = 0; i < numBatches; i++) {
+      for (var j = 0; j < blades.length; j++) {
+        if (j % numBatches != i) {
+          continue;
+        }
+        const b = blades[j];
+        if (b.isPushed) continue;
+
+        const idle = Math.sin(t * b.idleSpeed + b.idlePhase) * 0.12;
+        b.el.style.setProperty("--rot", `${idle}rad`);
+      }
+    }
+
+    frame = (frame + 1) % Math.ceil(numBatches);
+
+    requestAnimationFrame(animate);
+  }
+
+  useEffect(() => {
+    makeField();
+    // Mouse interaction
 
     window.addEventListener("mousemove", handleMouseMove);
+    window.addEventListener("resize", makeField);
 
     // Idle ripple (batched)
-    let frame = 0;
-
-    function animate(t) {
-      const blades = bladesRef.current;
-
-      const numBatches = 500;
-
-      for (let i = 0; i < numBatches; i++) {
-        for (var j = 0; j < blades.length; j++) {
-          if (j % numBatches != i) {
-            continue;
-          }
-          const b = blades[j];
-          if (b.isPushed) continue;
-
-          const idle = Math.sin(t * b.idleSpeed + b.idlePhase) * 0.12;
-          b.el.style.setProperty("--rot", `${idle}rad`);
-        }
-      }
-
-      frame = (frame + 1) % Math.ceil(numBatches);
-
-      requestAnimationFrame(animate);
-    }
 
     requestAnimationFrame(animate);
 
@@ -117,6 +127,16 @@ export default function Field(props) {
       window.removeEventListener("mousemove", handleMouseMove);
     };
   }, []);
+
+  useEffect(() => {
+    console.log(grassMotion);
+    if (!grassMotion) {
+      grassMotionRef.current = false;
+      window.removeEventListener("mousemove", handleMouseMove);
+    } else {
+      grassMotionRef.current = requestAnimationFrame(animate);
+    }
+  }, [grassMotion]);
 
   return <div className="grass-field" ref={fieldRef}></div>;
 }

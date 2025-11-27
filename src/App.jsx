@@ -2,37 +2,86 @@ import { useState } from "react";
 import Field from "./Field";
 import Title from "./Title";
 import Item from "./Item";
+import Hoverbox from "./HoverBox";
+import Switch from "@mui/material/Switch";
+
+import grassBg from "/grass_bg.jpg";
+import itemsData from "./data/items.json";
 
 import "./App.css";
 
 function App() {
-  const BLADES_PER_ROW = 50;
-  const BLADES_PER_COLUMN = 40;
+  const MAX_BLADES_PER_ROW = 50;
+  const MAX_BLADES_PER_COLUMN = 40;
+
+  const [hoverData, setHoverData] = useState(null);
+  const [grassMotion, setGrassMotion] = useState(true);
+  const [whoHovered, setWhoHovered] = useState(false);
+  const [showAbout, setShowAbout] = useState(false);
+
+  var blades_per_row = Math.floor(
+    Math.min(MAX_BLADES_PER_ROW, window.innerWidth / 35)
+  );
+  var blades_per_column = Math.floor(
+    Math.min(MAX_BLADES_PER_COLUMN, window.innerHeight / 24)
+  );
 
   function getZIndex(x, y) {
-    const xIndex = (x / window.innerWidth) * BLADES_PER_ROW;
-    const yIndex = (y / window.innerHeight) * BLADES_PER_COLUMN;
+    const xIndex = (x / window.innerWidth) * blades_per_row;
+    const yIndex = (y / window.innerHeight) * blades_per_column;
 
     const j = Math.floor(xIndex);
     const i = Math.floor(yIndex);
 
-    console.log(j, i);
-
     // Use the same indexing logic as when creating
-    const zIndex = i * BLADES_PER_COLUMN + j;
+    const zIndex = i * blades_per_column + j;
 
-    console.log("Z index is " + zIndex);
     return zIndex;
   }
 
   return (
     <div className="content">
+      <img id="bg" src={grassBg} />
       <Field
-        blades_per_row={BLADES_PER_ROW}
-        blades_per_column={BLADES_PER_COLUMN}
+        blades_per_row={blades_per_row}
+        blades_per_column={blades_per_column}
+        grassMotion={grassMotion}
       />
       <Title />
-      <Item getZIndex={getZIndex} />
+      {itemsData.items.map((item, i) => {
+        return (
+          <Item
+            item={item}
+            getZIndex={getZIndex}
+            key={"item-" + i}
+            setHoverData={setHoverData}
+          />
+        );
+      })}
+      {hoverData && <Hoverbox data={hoverData} />}
+      <div className="text grass-off">
+        grass is {grassMotion ? "on" : "off"}{" "}
+        <Switch
+          checked={grassMotion}
+          onChange={() => {
+            setGrassMotion(!grassMotion);
+          }}
+        />
+      </div>
+      <div
+        className={"text who " + (whoHovered ? "text-highlight" : "")}
+        onMouseOver={() => {
+          setWhoHovered(true);
+        }}
+        onMouseOut={() => {
+          setWhoHovered(false);
+        }}
+        onClick={() => {
+          setShowAbout(true);
+        }}
+      >
+        who?
+      </div>
     </div>
   );
 }
