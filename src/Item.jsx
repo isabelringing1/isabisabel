@@ -1,7 +1,7 @@
 import { useState, useEffect, useRef } from "react";
 
 function Item(props) {
-  const { item, getZIndex, setHoverData } = props;
+  const { item, index, getZIndex, setHoverData } = props;
   const [posTop, setPosTop] = useState(-300);
   const [posLeft, setPosLeft] = useState(-300);
   const [selected, setSelected] = useState(false);
@@ -11,6 +11,7 @@ function Item(props) {
   const dragTop = useRef(null);
   const dragLeft = useRef(null);
   const dragTimestamp = useRef(0);
+  const divRef = useRef(null);
 
   useEffect(() => {
     setPosLeft(Math.random() * (window.innerWidth - 500) + 250);
@@ -21,7 +22,7 @@ function Item(props) {
     setItemStyle({
       top: posTop + "px",
       left: posLeft + "px",
-      zIndex: getZIndex(posLeft + 20, posTop + 20),
+      zIndex: getZIndex(posLeft + 20, posTop + 50),
     });
   }, [posLeft, posTop]);
 
@@ -71,11 +72,23 @@ function Item(props) {
     if (selected) {
       return;
     }
+    setHover();
+  };
+
+  const setHover = () => {
     setHovered(true);
+    var yPos = posTop + 100;
+    var flipped = false;
+    if (posTop > window.innerHeight / 2) {
+      yPos = posTop - 100;
+      flipped = true;
+      console.log("Flipped true");
+    }
     setHoverData({
       item: item,
       x: posLeft,
-      y: posTop + 100,
+      y: yPos,
+      flipped: flipped,
     });
   };
 
@@ -97,6 +110,8 @@ function Item(props) {
       className={
         "item " + (selected ? "selected " : "") + (hovered ? "hovered" : "")
       }
+      id={"item-" + item.id}
+      ref={divRef}
       onMouseDown={startDrag}
       onTouchStart={startDrag}
       onTouchMove={itemDragged}

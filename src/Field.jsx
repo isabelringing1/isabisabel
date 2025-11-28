@@ -1,7 +1,7 @@
 import { useEffect, useRef } from "react";
 
 export default function Field(props) {
-  const { blades_per_row, blades_per_column, grassMotion } = props;
+  const { blades_per_row, blades_per_column, grassMotion, showAbout } = props;
   const fieldRef = useRef(null);
   const bladesRef = useRef([]);
   const grassMotionRef = useRef(true);
@@ -17,14 +17,24 @@ export default function Field(props) {
 
     // Clear
     field.innerHTML = "";
+    var height = Math.max(
+      document.body.scrollHeight,
+      document.body.offsetHeight,
+      document.documentElement.clientHeight,
+      document.documentElement.scrollHeight,
+      document.documentElement.offsetHeight
+    );
+
+    console.log(height);
 
     for (let i = 0; i < blades_per_column; i++) {
       for (let j = 0; j < blades_per_row; j++) {
         const blade = document.createElement("div");
         blade.className = "blade";
+        blade.id = "blade-" + i + "-" + j;
 
         var x = (j / blades_per_row) * window.innerWidth;
-        var y = (i / blades_per_column) * window.innerHeight;
+        var y = (i / blades_per_column) * height;
         x += Math.random() * VARIANCE - VARIANCE / 2;
         y += Math.random() * VARIANCE - VARIANCE / 2;
 
@@ -137,6 +147,30 @@ export default function Field(props) {
       grassMotionRef.current = requestAnimationFrame(animate);
     }
   }, [grassMotion]);
+
+  useEffect(() => {
+    for (let i = 0; i < blades_per_column; i++) {
+      for (let j = 0; j < blades_per_row; j++) {
+        const blade = document.getElementById("blade-" + i + "-" + j);
+        if (!blade) {
+          continue;
+        }
+        if (
+          i < blades_per_column * 0.4 &&
+          i > 1 &&
+          j > (5 * blades_per_row) / 8
+        )
+          if (showAbout) {
+            blade.classList.add("hide");
+          } else {
+            if (blade.classList.contains("hide")) {
+              blade.classList.remove("hide");
+              blade.classList.add("grass-grow");
+            }
+          }
+      }
+    }
+  }, [showAbout]);
 
   return <div className="grass-field" ref={fieldRef}></div>;
 }
