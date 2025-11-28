@@ -83,7 +83,8 @@ body {
 
 @media (max-width: 600px) {
   body {
-    overflow: initial;
+    overflow: auto;
+    overscroll-behavior: none;
   }
 
   .text {
