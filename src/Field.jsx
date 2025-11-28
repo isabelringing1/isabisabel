@@ -25,8 +25,6 @@ export default function Field(props) {
       document.documentElement.offsetHeight
     );
 
-    console.log(height);
-
     for (let i = 0; i < blades_per_column; i++) {
       for (let j = 0; j < blades_per_row; j++) {
         const blade = document.createElement("div");
@@ -122,6 +120,19 @@ export default function Field(props) {
     requestAnimationFrame(animate);
   }
 
+  Promise.all(
+    Array.from(document.images)
+      .filter((img) => !img.complete)
+      .map(
+        (img) =>
+          new Promise((resolve) => {
+            img.onload = img.onerror = resolve;
+          })
+      )
+  ).then(() => {
+    makeField();
+  });
+
   useEffect(() => {
     makeField();
     // Mouse interaction
@@ -139,7 +150,6 @@ export default function Field(props) {
   }, []);
 
   useEffect(() => {
-    console.log(grassMotion);
     if (!grassMotion) {
       grassMotionRef.current = false;
       window.removeEventListener("mousemove", handleMouseMove);
