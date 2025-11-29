@@ -1,7 +1,13 @@
 import { useEffect, useRef } from "react";
 
 export default function Field(props) {
-  const { blades_per_row, blades_per_column, grassMotion, showAbout } = props;
+  const {
+    blades_per_row,
+    blades_per_column,
+    grassMotion,
+    showAbout,
+    showMobileView,
+  } = props;
   const fieldRef = useRef(null);
   const bladesRef = useRef([]);
   const grassMotionRef = useRef(true);
@@ -120,18 +126,20 @@ export default function Field(props) {
     requestAnimationFrame(animate);
   }
 
-  Promise.all(
-    Array.from(document.images)
-      .filter((img) => !img.complete)
-      .map(
-        (img) =>
-          new Promise((resolve) => {
-            img.onload = img.onerror = resolve;
-          })
-      )
-  ).then(() => {
-    makeField();
-  });
+  if (showMobileView) {
+    Promise.all(
+      Array.from(document.images)
+        .filter((img) => !img.complete)
+        .map(
+          (img) =>
+            new Promise((resolve) => {
+              img.onload = img.onerror = resolve;
+            })
+        )
+    ).then(() => {
+      makeField();
+    });
+  }
 
   useEffect(() => {
     makeField();

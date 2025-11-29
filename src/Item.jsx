@@ -82,7 +82,6 @@ function Item(props) {
     if (posTop > window.innerHeight / 2) {
       yPos = posTop - 100;
       flipped = true;
-      console.log("Flipped true");
     }
     setHoverData({
       item: item,

@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef } from "react";
 export default function ItemBox(props) {
-  const { item, getZIndex } = props;
+  const { item, getZIndex, getTag } = props;
 
   const divRef = useRef(null);
   const [boxStyle, setBoxStyle] = useState({});
@@ -34,6 +34,16 @@ export default function ItemBox(props) {
     >
       <div className="hoverbox-title">{item.title}</div>
       <div className="itembox-desc">{item.desc}</div>
+      <div className="tag-container">
+        {item.tags &&
+          item.tags.map((tag, i) => {
+            return (
+              <div className={"hoverbox-tag tag-" + tag} key={"tag-" + i}>
+                {getTag(tag)}
+              </div>
+            );
+          })}
+      </div>
       <div className="hoverbox-gif-div">
         <img
           className="hoverbox-gif"

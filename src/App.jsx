@@ -26,7 +26,6 @@ function App() {
   var blades_per_row = Math.floor(
     Math.min(MAX_BLADES_PER_ROW, window.innerWidth / 25)
   );
-  console.log(window.innerWidth / blades_per_row);
   var blades_per_column = Math.floor(
     Math.min(MAX_BLADES_PER_COLUMN, window.innerHeight / 14)
   );
@@ -52,6 +51,15 @@ function App() {
     return zIndex;
   }
 
+  function getTag(tag) {
+    switch (tag) {
+      case "desktop":
+        return "DESKTOP ONLY";
+      case "dev":
+        return "IN DEVELOPMENT";
+    }
+  }
+
   return (
     <div className="content">
       <img id="bg" src={grassBg} />
@@ -60,6 +68,7 @@ function App() {
         blades_per_column={blades_per_column}
         grassMotion={grassMotion}
         showAbout={showAbout}
+        showMobileView={showMobileView}
       />
 
       {!showMobileView && (
@@ -95,7 +104,12 @@ function App() {
           <div className="itembox-container">
             {itemsData.items.map((item, i) => {
               return (
-                <ItemBox item={item} getZIndex={getZIndex} key={"item-" + i} />
+                <ItemBox
+                  item={item}
+                  getZIndex={getZIndex}
+                  key={"item-" + i}
+                  getTag={getTag}
+                />
               );
             })}
           </div>
@@ -121,7 +135,7 @@ function App() {
       </div>
       {showAbout && <About />}
 
-      <Hoverbox data={hoverData} />
+      <Hoverbox data={hoverData} getTag={getTag} />
     </div>
   );
 }
