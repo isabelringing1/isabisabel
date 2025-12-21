@@ -174,9 +174,9 @@ export default function Field(props) {
           continue;
         }
         if (
-          i < blades_per_column * 0.4 &&
+          i < blades_per_column * 0.42 &&
           i > 1 &&
-          j > (5 * blades_per_row) / 8
+          j > (5.3 * blades_per_row) / 8
         )
           if (showAbout) {
             blade.classList.add("hide");

@@ -26,6 +26,15 @@ export default function About(props) {
           portfolio
         </a>
       </div>
+      <div>
+        <a
+          className="about-text faded"
+          href="mailto:isabelringing1@gmail.com"
+          target="_blank"
+        >
+          contact
+        </a>
+      </div>
     </div>
   );
 }
