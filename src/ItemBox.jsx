@@ -3,7 +3,8 @@ export default function ItemBox(props) {
   const { item, getZIndex, getTag } = props;
 
   const divRef = useRef(null);
-  const [boxStyle, setBoxStyle] = useState({});
+  const [boxStyle, setBoxStyle] = useState({ zIndex: 3000 });
+  const [imageLoaded, setImageLoaded] = useState(false);
 
   useEffect(() => {
     setZIndex();

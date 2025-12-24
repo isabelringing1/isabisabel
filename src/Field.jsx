@@ -11,6 +11,7 @@ export default function Field(props) {
   const fieldRef = useRef(null);
   const bladesRef = useRef([]);
   const grassMotionRef = useRef(true);
+  var allImagesLoadedRef = useRef(false);
 
   const numBetween = (num, lower, higher) => num > lower && num < higher;
 
@@ -24,6 +25,14 @@ export default function Field(props) {
     // Clear
     field.innerHTML = "";
     var height = Math.max(
+      document.body.scrollHeight,
+      document.body.offsetHeight,
+      document.documentElement.clientHeight,
+      document.documentElement.scrollHeight,
+      document.documentElement.offsetHeight,
+      2000
+    );
+    console.log(
       document.body.scrollHeight,
       document.body.offsetHeight,
       document.documentElement.clientHeight,
@@ -45,6 +54,9 @@ export default function Field(props) {
         blade.style.left = x + "px";
         blade.style.top = y + "px";
         blade.style.zIndex = i * blades_per_column + j;
+        if (showMobileView && !allImagesLoadedRef.current) {
+          blade.style.zIndex = 0;
+        }
 
         if (numBetween(j, 10 - i / 2, 30 - i / 2) && numBetween(i, 0, 50)) {
           if (Math.random() * 10 < 8) {
@@ -137,6 +149,7 @@ export default function Field(props) {
             })
         )
     ).then(() => {
+      allImagesLoadedRef.current = true;
       makeField();
     });
   }
