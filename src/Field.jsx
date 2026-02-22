@@ -30,14 +30,16 @@ export default function Field(props) {
       document.documentElement.clientHeight,
       document.documentElement.scrollHeight,
       document.documentElement.offsetHeight,
-      2000
     );
+    if (showMobileView) {
+      height = Math.max(height, 2000);
+    }
     console.log(
       document.body.scrollHeight,
       document.body.offsetHeight,
       document.documentElement.clientHeight,
       document.documentElement.scrollHeight,
-      document.documentElement.offsetHeight
+      document.documentElement.offsetHeight,
     );
 
     for (let i = 0; i < blades_per_column; i++) {
@@ -146,8 +148,8 @@ export default function Field(props) {
           (img) =>
             new Promise((resolve) => {
               img.onload = img.onerror = resolve;
-            })
-        )
+            }),
+        ),
     ).then(() => {
       allImagesLoadedRef.current = true;
       makeField();
